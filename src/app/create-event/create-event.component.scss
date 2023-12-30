@@ -1,0 +1,146 @@
+.create-event-form {
+    max-width: 650px;
+    margin: 50px auto;
+    padding: 40px;
+    background: linear-gradient(to bottom right, #f7f7f7, #eaeaea);
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: #333;
+    font-size: 1.1em;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="time"],
+input[type="number"],
+textarea,
+select {
+    appearance: none;
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 1em;
+    background-color: #fff;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.3s ease;
+}
+
+input[type="file"] {
+    background-color: transparent;
+    padding: 15px;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1em;
+    color: #007bff;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+input[type="file"]:hover {
+    border-color: #0056b3;
+}
+
+input[type="date"],
+input[type="time"] {
+    cursor: pointer;
+}
+
+input[type="date"]:hover,
+input[type="time"]:hover,
+input[type="text"]:hover,
+input[type="number"]:hover,
+textarea:hover,
+select:hover {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.12);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+select {
+    cursor: pointer;
+    background-image: linear-gradient(45deg, transparent 50%, gray 50%),
+                      linear-gradient(135deg, gray 50%, transparent 50%),
+                      linear-gradient(to right, #ccc, #ccc);
+    background-position: calc(100% - 20px) calc(1em + 2px), 
+                        calc(100% - 15px) calc(1em + 2px),
+                        calc(100% - 2.5em) 0.5em;
+    background-size: 5px 5px, 5px 5px, 1px 1.5em;
+    background-repeat: no-repeat;
+}
+
+button.submit-button {
+    width: 100%;
+    padding: 18px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button.submit-button:hover {
+    background-color: #0056b3;
+}
+
+.message {
+    margin-top: 25px;
+    padding: 15px;
+    background-color: #e0f7fa;
+    border-left: 6px solid #007bff;
+    color: #31708f;
+    font-size: 1em;
+    border-radius: 5px;
+}
+
+/* Additional Styling for Enhanced User Experience */
+input[type="text"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.16);
+}
+
+::placeholder {
+    color: #aaa;
+}
+
+/* Custom Styling for File Input */
+input[type="file"]::-webkit-file-upload-button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+input[type="file"]::-webkit-file-upload-button:hover {
+    background-color: #0056b3;
+}
+.error-message {
+    margin-top: 15px;
+    color: #d9534f; // A red-ish color for errors
+  }
+  

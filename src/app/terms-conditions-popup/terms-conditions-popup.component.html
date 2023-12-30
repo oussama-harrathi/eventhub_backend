@@ -1,0 +1,5 @@
+<div *ngIf="showPopup" class="terms-popup">
+    {{ 'TERMS_POPUP_TEXT' | translate }}
+    <a [routerLink]="['/terms']">{{ 'TERMS_AND_CONDITIONS' | translate }}</a>.
+    <button (click)="acceptTerms()">{{ 'ACCEPT_BUTTON' | translate }}</button>
+</div>

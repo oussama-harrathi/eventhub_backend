@@ -1,0 +1,6 @@
+<div class="payment-form">
+  <h2>{{ 'PAYMENT_HEADER' | translate }}</h2>
+  <p>{{ 'TOTAL_AMOUNT' | translate }}: {{ amount | currency }}</p>
+  <div #cardElement></div>
+  <button (click)="handlePayment()">{{ 'PAY_NOW_BUTTON' | translate }}</button>
+</div>

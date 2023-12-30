@@ -1,0 +1,37 @@
+<div class="home">
+  <div *ngIf="events.length === 0" class="no-events-message">
+    {{ 'NO_EVENTS_FOUND' | translate }}
+  </div>
+  <div class="event-cards">
+    <!-- Loop through each event -->
+    <div class="event-card" *ngFor="let event of events" (click)="openModal(event)">
+      <div *ngIf="isExpired(event.eventDate)" class="expired-sticker">{{ 'EXPIRED' | translate }}</div>
+      <div class="image-container">
+        <img [src]="event.eventPicture" alt="{{ 'EVENT_IMAGE_ALT' | translate }}">
+      </div>
+      <div class="event-info">
+        <h3>{{ event.eventName }}</h3>
+        <p><strong>{{ 'LOCATION' | translate }}:</strong> {{ event.location }}</p>
+        <p><strong>{{ 'DATE' | translate }}:</strong> {{ event.eventDate | date }}</p>
+        <p><strong>{{ 'TIME' | translate }}:</strong> {{ event.eventTime | date: 'HH:mm' }}</p>
+        <div class="event-description">{{ event.description }}</div>
+      </div>
+      <div class="event-pricing">
+        <div class="price">
+          <fa-icon [icon]="faDollarSign"></fa-icon>
+          <span>{{ event.price | currency }}</span>
+        </div>
+        <div class="available-tickets">
+          <fa-icon [icon]="faTicketAlt"></fa-icon>
+          <span>{{ event.allowedTicketsNumber }} {{ 'TICKETS_AVAILABLE' | translate }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <app-event-detail-modal
+  *ngIf="selectedEvent"
+  [event]="selectedEvent"
+  (close)="closeModal()">
+  </app-event-detail-modal>
+</div>

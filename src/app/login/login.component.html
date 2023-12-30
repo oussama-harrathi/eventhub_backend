@@ -1,0 +1,45 @@
+<div class="login-form-container">
+  <div class="login-form">
+    <h2>{{ 'LOGIN_HEADER' | translate }}</h2>
+    <!-- Display the error message -->
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+    <div *ngIf="message" class="alert alert-info">
+      {{ message }}
+    </div>
+    <form (ngSubmit)="login()">
+      <div class="form-group">
+        <label for="email">{{ 'EMAIL_LABEL' | translate }}</label>
+        <input type="email" id="email" [(ngModel)]="email" name="email" placeholder="{{ 'EMAIL_PLACEHOLDER' | translate }}" required>
+      </div>
+      <div class="form-group">
+        <label for="password">{{ 'PASSWORD_LABEL' | translate }}</label>
+        <div class="password-container">
+          <input [type]="showPassword ? 'text' : 'password'" id="password" [(ngModel)]="password" name="password" placeholder="{{ 'PASSWORD_PLACEHOLDER' | translate }}" required>
+          <fa-icon [icon]="showPassword ? 'eye-slash' : 'eye'" (click)="toggleShowPassword()" class="password-toggle-icon"></fa-icon>
+        </div>
+      </div>
+      <button type="submit" class="login_button bn54">
+        <span class="bn54span">{{ 'LOGIN_BUTTON' | translate }}</span>
+      </button>
+    </form>
+
+    <!-- Forgot Password Link -->
+    <p class="forgot-password-link" (click)="showResetForm = !showResetForm">{{ 'FORGOT_PASSWORD' | translate }}</p>
+
+    <!-- Password Reset Form -->
+    <div *ngIf="showResetForm" class="password-reset-form">
+      <input type="email" [(ngModel)]="resetEmail" placeholder="{{ 'RESET_EMAIL_PLACEHOLDER' | translate }}" class="reset-email-input">
+      <button (click)="requestResetPassword()" class="reset-password-button">{{ 'SEND_RESET_LINK' | translate }}</button>
+    </div>
+    <p *ngIf="resetMessage" class="reset-message">{{ resetMessage }}</p>
+
+    <button class="google-signup-button" (click)="signInWithGoogle()">
+      <fa-icon [icon]="['fab', 'google']" class="google-icon"></fa-icon>
+      {{ 'SIGN_IN_WITH_GOOGLE' | translate }}
+    </button>
+
+    <p class="signup-link">{{ 'DONT_HAVE_ACCOUNT' | translate }} <a routerLink="/signup">{{ 'SIGN_UP' | translate }}</a></p>
+  </div>
+</div>

@@ -1,0 +1,61 @@
+<div class="create-event-form">
+  <h2>{{ 'CREATE_NEW_EVENT_HEADER' | translate }}</h2>
+  <form (ngSubmit)="onSubmit()" #eventForm="ngForm">
+    <div class="form-group">
+      <label for="eventName">{{ 'EVENT_NAME_LABEL' | translate }}</label>
+      <input type="text" id="eventName" [(ngModel)]="eventData.eventName" name="eventName" required>
+    </div>
+
+    <div class="form-group">
+      <label for="eventDate">{{ 'EVENT_DATE_LABEL' | translate }}</label>
+      <input type="date" id="eventDate" [(ngModel)]="eventData.eventDate" name="eventDate" [min]="today | date:'yyyy-MM-dd'" required>
+    </div>
+
+    <div class="form-group">
+      <label for="eventTime">{{ 'EVENT_TIME_LABEL' | translate }}</label>
+      <input type="time" id="eventTime" [(ngModel)]="eventData.eventTime" name="eventTime" required>
+    </div>
+
+    <div class="form-group">
+      <label for="location">{{ 'LOCATION_LABEL' | translate }}</label>
+      <input type="text" id="location" [(ngModel)]="eventData.location" name="location" required>
+    </div>
+
+    <div class="form-group">
+      <label for="description">{{ 'DESCRIPTION_LABEL' | translate }}</label>
+      <textarea id="description" [(ngModel)]="eventData.description" name="description" required></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="category">{{ 'CATEGORY_LABEL' | translate }}</label>
+      <select id="category" [(ngModel)]="eventData.category" name="category" required>
+        <!-- Add more categories as needed with their translations -->
+        <option value="music">{{ 'CATEGORY_MUSIC' | translate }}</option>
+        <option value="sports">{{ 'CATEGORY_SPORTS' | translate }}</option>
+        <option value="technology">{{ 'CATEGORY_TECHNOLOGY' | translate }}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="eventPicture">{{ 'EVENT_PICTURE_LABEL' | translate }}</label>
+      <input type="file" id="eventPicture" (change)="onFileChange($event)" name="eventPicture" required>
+    </div>
+
+    <div class="form-group">
+      <label for="allowedTickets">{{ 'ALLOWED_TICKETS_LABEL' | translate }}</label>
+      <input type="number" id="allowedTickets" [(ngModel)]="eventData.allowedTicketsNumber" name="allowedTickets" min="1" required>
+    </div>
+    <div class="form-group">
+      <label for="price">{{ 'PRICE_LABEL' | translate }}</label>
+      <input type="number" id="price" [(ngModel)]="eventData.price" name="price" min="1" required>
+    </div>
+
+    <button type="submit" class="submit-button">{{ 'CREATE_EVENT_BUTTON' | translate }}</button>
+
+    <p *ngIf="submitted && !eventForm.valid" class="error-message">
+      {{ 'FORM_ERROR_MESSAGE' | translate }}
+    </p>
+  </form>
+
+  <p *ngIf="message" class="message">{{ message }}</p>
+</div>
