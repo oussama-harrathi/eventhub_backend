@@ -95,7 +95,7 @@ const analytics = getAnalytics(app);
     HttpClientModule,
     FormsModule,
     AngularFireModule.initializeApp(firebaseConfig),
-    AngularFireModule.initializeApp(firebaseConfig),
+    
     provideDatabase(() => getDatabase()),
     MatSnackBarModule,
     MatTooltipModule,
