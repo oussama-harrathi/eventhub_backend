@@ -18,6 +18,8 @@ import { FormsModule } from '@angular/forms';
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { AngularFireModule } from '@angular/fire/compat';
+import { getDatabase, provideDatabase } from '@angular/fire/database';
+
 import { EmailVerificationComponent } from './email-verification/email-verification.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
@@ -38,6 +40,7 @@ import { NgxStripeModule } from 'ngx-stripe';
 import { TermsConditionsPopupComponent } from './terms-conditions-popup/terms-conditions-popup.component';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -92,6 +95,8 @@ const analytics = getAnalytics(app);
     HttpClientModule,
     FormsModule,
     AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireModule.initializeApp(firebaseConfig),
+    provideDatabase(() => getDatabase()),
     MatSnackBarModule,
     MatTooltipModule,
     PickerComponent,

@@ -1,16 +1,30 @@
 import { Injectable } from '@angular/core';
-import { AngularFireDatabase } from '@angular/fire/compat/database';
-import { Observable } from 'rxjs';
-import {jwtDecode} from 'jwt-decode'; 
+import { getDatabase, ref, push, onValue, query, limitToLast } from 'firebase/database';
+import { Observable, BehaviorSubject } from 'rxjs';
+import {jwtDecode} from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
-  constructor(private db: AngularFireDatabase) {}
+  constructor() {}
 
   getMessages(eventId: string): Observable<any[]> {
-    return this.db.list(`chats/${eventId}`).valueChanges();
+    const messages = new BehaviorSubject<any[]>([]);
+    const db = getDatabase();
+    const messagesRef = query(ref(db, `chats/${eventId}`), limitToLast(100)); // Adjust the limit as needed
+
+    onValue(messagesRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const formattedMessages = Object.keys(data).map(key => ({ ...data[key], key }));
+        messages.next(formattedMessages);
+      }
+    }, {
+      onlyOnce: false
+    });
+
+    return messages.asObservable();
   }
 
   async sendMessage(eventId: string, message: string, role: string): Promise<void> {
@@ -21,8 +35,9 @@ export class ChatService {
     }
 
     const timestamp = new Date().getTime();
+    const db = getDatabase();
     try {
-      await this.db.list(`chats/${eventId}`).push({ userId: user.userId, fullName: user.fullName, message, timestamp, role });
+      await push(ref(db, `chats/${eventId}`), { userId: user.userId, fullName: user.fullName, message, timestamp, role });
     } catch (error) {
       console.error('Error sending message:', error);
       throw error;
@@ -34,8 +49,7 @@ export class ChatService {
     if (token) {
       try {
         const decodedToken: any = jwtDecode(token);
-        // Replace 'user_id' and 'full_name' with the actual properties from your token
-        return { userId: decodedToken?.user_id, fullName: decodedToken?.full_name }; 
+        return { userId: decodedToken?.user_id, fullName: decodedToken?.full_name };
         
       } catch (error) {
         console.error('Error decoding token:', error);
@@ -45,3 +59,13 @@ export class ChatService {
     return null;
   }
 }
+
+
+
+
+
+
+
+
+
+
