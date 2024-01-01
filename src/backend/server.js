@@ -9,7 +9,7 @@ const path = require('path');
 
 
 // Configure middleware
-app.use(cors()); // Place this line before other app.use statements
+app.use(cors(corsOptions)); // Place this line before other app.use statements
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());
