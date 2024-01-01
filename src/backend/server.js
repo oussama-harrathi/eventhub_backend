@@ -7,6 +7,7 @@ const usersRouter = require('./controllers/users');
 const eventsRouter = require('./controllers/events'); // Adjust the path as needed
 const path = require('path');
 
+
 // Configure middleware
 app.use(cors()); // Place this line before other app.use statements
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -14,8 +15,9 @@ app.use(bodyParser.json());
 app.use(express.json());
 // Specify the allowed origins
 const corsOptions = {
-  origin: 'http://localhost:4200', // Replace with the origin of your Angular app
+  origin: 'https://master--deluxe-sundae-3987e9.netlify.app', // Replace with the origin of your Angular app
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
   optionsSuccessStatus: 200,
 };
 
