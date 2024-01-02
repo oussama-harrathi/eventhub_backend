@@ -24,11 +24,7 @@ app.use(cors(corsOptions));
 
 app.use('/users', cors(corsOptions), usersRouter); // This defines the base path for the users routes
 app.use('/events',cors(corsOptions), eventsRouter);
-const angularDistPath = path.join(__dirname, '../../../dist/event-hub');
-app.use(express.static(angularDistPath));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(angularDistPath, 'index.html'));
-});
+
 
 
 
