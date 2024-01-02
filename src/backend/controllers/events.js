@@ -18,17 +18,9 @@ const storage = new Storage({ keyFilename: '../../uploads/eventhub-404818-1eb1f2
 
 const bucketName = 'EventHub_bucket';
 const multer = require('multer');
-const MulterGoogleCloudStorage = require('@google-cloud/multer-storage');
-const upload = multer({
-    storage: MulterGoogleCloudStorage.storageEngine({
-      bucket: bucketName,
-      filename: (req, file, cb) => {
-        // Generate a unique filename here
-        const uniqueName = `${Date.now()}-${file.originalname}`;
-        cb(null, uniqueName);
-      },
-    }),
-  });
+const upload = multer({ dest: 'uploads/' });
+
+
 
 
 let transporter = nodemailer.createTransport({
@@ -93,7 +85,14 @@ router.post('/create', authenticateToken, upload.single('eventPicture'), async (
     try {
         connection = await oracle.getConnection(dbConfig);
 
-        const eventPictureUrl = req.file ? `https://storage.googleapis.com/${bucketName}/${req.file.filename}` : null;
+        let eventPictureUrl = null;
+        if (req.file) {
+            const bucket = storage.bucket(bucketName);
+            const fileName = `${Date.now()}-${req.file.originalname}`;
+            await bucket.upload(req.file.path, { destination: fileName });
+            eventPictureUrl = `https://storage.googleapis.com/${bucketName}/${fileName}`;
+            fs.unlinkSync(req.file.path); // Delete the file from local storage
+        }
 
         const insertEventSql = `
             INSERT INTO events (ORGANIZER_ID, EVENT_NAME, EVENT_DATE, EVENT_TIME, LOCATION, DESCRIPTION, CATEGORY, EVENT_PICTURE, ALLOWED_TICKETS_NUMBER, PRICE)
@@ -113,7 +112,7 @@ router.post('/create', authenticateToken, upload.single('eventPicture'), async (
     } finally {
         if (connection) {
             try {
-                await connection.release();
+                connection.release();
             } catch (err) {
                 console.error('Error releasing connection:', err);
             }
@@ -135,11 +134,6 @@ router.get('/all', async (req, res) => {
                 description = await clobToString(event.DESCRIPTION);
             }
 
-            let pictureBase64 = null;
-            if (event.EVENT_PICTURE) {
-                pictureBase64 = await blobToBase64(event.EVENT_PICTURE);
-            }
-
             return {
                 eventId: event.EVENT_ID,
                 organizerId: event.ORGANIZER_ID,
@@ -149,14 +143,13 @@ router.get('/all', async (req, res) => {
                 location: event.LOCATION,
                 description,
                 category: event.CATEGORY,
-                eventPicture: pictureBase64,
+                eventPicture: event.EVENT_PICTURE, // URL of the image in Google Cloud Storage
                 allowedTicketsNumber: event.ALLOWED_TICKETS_NUMBER,
-                price:event.PRICE
+                price: event.PRICE
             };
         });
 
         const events = await Promise.all(eventsPromises);
-
         res.json(events);
     } catch (error) {
         console.error('Error fetching events:', error);
@@ -164,13 +157,14 @@ router.get('/all', async (req, res) => {
     } finally {
         if (connection) {
             try {
-                connection.release();
+                await connection.release();
             } catch (err) {
                 console.error('Error releasing connection:', err);
             }
         }
     }
 });
+
 
 
 router.get('/search', async (req, res) => {
@@ -194,10 +188,7 @@ router.get('/search', async (req, res) => {
                 description = await clobToString(event.DESCRIPTION);
             }
 
-            let pictureBase64 = null;
-            if (event.EVENT_PICTURE) {
-                pictureBase64 = await blobToBase64(event.EVENT_PICTURE);
-            }
+            
 
             return {
                 eventId: event.EVENT_ID,
@@ -208,7 +199,7 @@ router.get('/search', async (req, res) => {
                 location: event.LOCATION,
                 description,
                 category: event.CATEGORY,
-                eventPicture: pictureBase64,
+                eventPicture: event.eventPicture,
                 allowedTicketsNumber: event.ALLOWED_TICKETS_NUMBER,
                 price:event.PRICE
             };
@@ -413,10 +404,7 @@ router.get('/created-by-user', authenticateToken, async (req, res) => {
                 description = await clobToString(event.DESCRIPTION);
             }
 
-            let pictureBase64 = null;
-            if (event.EVENT_PICTURE) {
-                pictureBase64 = await blobToBase64(event.EVENT_PICTURE);
-            }
+            
 
             return {
                 eventId: event.EVENT_ID,
@@ -426,7 +414,7 @@ router.get('/created-by-user', authenticateToken, async (req, res) => {
                 location: event.LOCATION,
                 description,
                 category: event.CATEGORY,
-                eventPicture: pictureBase64,
+                eventPicture: event.eventPicture,
                 allowedTicketsNumber: event.ALLOWED_TICKETS_NUMBER,
                 price: event.PRICE,
                 ticketsSold: event.TICKETS_SOLD,
@@ -474,10 +462,7 @@ router.get('/:id', async (req, res) => {
             description = await clobToString(event.DESCRIPTION);
         }
 
-        let pictureBase64 = null;
-        if (event.EVENT_PICTURE) {
-            pictureBase64 = await blobToBase64(event.EVENT_PICTURE);
-        }
+       
 
         const eventDetails = {
             eventId: event.EVENT_ID,
@@ -488,7 +473,7 @@ router.get('/:id', async (req, res) => {
             location: event.LOCATION,
             description,
             category: event.CATEGORY,
-            eventPicture: pictureBase64,
+            eventPicture: event.eventPicture,
             allowedTicketsNumber: event.ALLOWED_TICKETS_NUMBER,
             price: event.PRICE
         };
