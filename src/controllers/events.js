@@ -25,7 +25,7 @@ const bucketName = 'EventHub_bucket';
 const corsOptions = {
     origin: 'https://master--deluxe-sundae-3987e9.netlify.app', // Replace with the origin of your Angular app
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
+    
     optionsSuccessStatus: 200,
   };
 
