@@ -17,16 +17,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "32jkJDF93@#fjJKH*#(kd0932JK@#Jfj2f
 const storage = new Storage({ keyFilename: '../../uploads/eventhub-404818-1eb1f209a523.json' });
 
 const bucketName = 'EventHub_bucket';
-const multer = require('multer');
-const upload = multer({ 
-    storage: MulterGoogleCloudStorage.storageEngine({
-        bucket: bucketName,
-        filename: (req, file, cb) => {
-            const uniqueName = `${Date.now()}-${file.originalname}`;
-            cb(null, uniqueName);
-        },
-    }),
-});
+
 
 
 
@@ -80,6 +71,7 @@ async function clobToString(clob) {
 
         let eventPictureUrl = null;
         if (req.file) {
+            // Upload file to Google Cloud Storage
             const bucket = storage.bucket(bucketName);
             const fileName = `${Date.now()}-${req.file.originalname}`;
             await bucket.upload(req.file.path, { destination: fileName });
