@@ -119,7 +119,7 @@ router.post('/register', async (req, res) => {
       { autoCommit: true }
     );
 
-    sendEmail(lowerCaseEmail, 'Email Verification', `Please verify your email by clicking on the following link: \nhttp://localhost:4200/verify-email?token=${token}`);
+    sendEmail(lowerCaseEmail, 'Email Verification', `Please verify your email by clicking on the following link: \nhttps://deluxe-sundae-3987e9.netlify.app/verify-email?token=${token}`);
 
     connection.release();
     return res.status(201).json({ message: 'User registered successfully. Please check your email to verify.' });
@@ -273,7 +273,7 @@ router.post('/request-reset-password', async (req, res) => {
       `;
       await connection.execute(updateSql, [resetToken, email], { autoCommit: true });
 
-      sendEmail(email, 'Password Reset', `You requested a password reset. Click the link to set a new password: http://localhost:4200/reset-password?token=${resetToken}`);
+      sendEmail(email, 'Password Reset', `You requested a password reset. Click the link to set a new password: https://deluxe-sundae-3987e9.netlify.app/reset-password?token=${resetToken}`);
     }
 
     connection.release();
