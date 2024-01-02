@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const oracle = require('oracledb');
-const multer = require('multer');
+const { Storage } = require('@google-cloud/storage');
+
 const fs = require('fs');
 const jwt = require('jsonwebtoken'); // Make sure JWT is imported
 const dbConfig = require('../dbconfig');
@@ -13,7 +14,21 @@ const stripe = require('stripe')('sk_test_51OPotvDshEHShaBlnxjFEqjVYWHpLnyeauJC0
 const paypal = require('@paypal/payouts-sdk');
 
 const JWT_SECRET = process.env.JWT_SECRET || "32jkJDF93@#fjJKH*#(kd0932JK@#Jfj2f3";
-const upload = multer({ dest: 'uploads/' });
+const storage = new Storage({ keyFilename: '../../uploads/eventhub-404818-1eb1f209a523.json' });
+
+const bucketName = 'EventHub_bucket';
+const multer = require('multer');
+const MulterGoogleCloudStorage = require('@google-cloud/multer-storage');
+const upload = multer({
+    storage: MulterGoogleCloudStorage.storageEngine({
+      bucket: bucketName,
+      filename: (req, file, cb) => {
+        // Generate a unique filename here
+        const uniqueName = `${Date.now()}-${file.originalname}`;
+        cb(null, uniqueName);
+      },
+    }),
+  });
 
 
 let transporter = nodemailer.createTransport({
@@ -71,35 +86,27 @@ async function clobToString(clob) {
 }
 
 router.post('/create', authenticateToken, upload.single('eventPicture'), async (req, res) => {
-    const { eventName, eventDate, eventTime, location, description, category, allowedTicketsNumber,price } = req.body;
-    const organizerId = req.user.user_id; // Extracted from token
-    
-    let eventPictureData = null;
-    console.log("Request Headers:", req.headers);
-    console.log("req.user:", req.user);
-console.log("Organizer ID:", organizerId);
+    const { eventName, eventDate, eventTime, location, description, category, allowedTicketsNumber, price } = req.body;
+    const organizerId = req.user.user_id;
 
     let connection;
     try {
-        // Read the binary data from the uploaded file
-        if (req.file && req.file.path) {
-            eventPictureData = fs.readFileSync(req.file.path);
-            fs.unlinkSync(req.file.path); // Delete the file after reading
-        }
-
         connection = await oracle.getConnection(dbConfig);
+
+        const eventPictureUrl = req.file ? `https://storage.googleapis.com/${bucketName}/${req.file.filename}` : null;
+
         const insertEventSql = `
-            INSERT INTO events (ORGANIZER_ID, EVENT_NAME, EVENT_DATE, EVENT_TIME, LOCATION, DESCRIPTION, CATEGORY, EVENT_PICTURE, ALLOWED_TICKETS_NUMBER,PRICE)
-            VALUES (:organizerId, :eventName, TO_DATE(:eventDate, 'YYYY-MM-DD'), TO_DATE(:eventTime, 'HH24:MI'), :location, :description, :category, :eventPicture, :allowedTicketsNumber, :price)
+            INSERT INTO events (ORGANIZER_ID, EVENT_NAME, EVENT_DATE, EVENT_TIME, LOCATION, DESCRIPTION, CATEGORY, EVENT_PICTURE, ALLOWED_TICKETS_NUMBER, PRICE)
+            VALUES (:organizerId, :eventName, TO_DATE(:eventDate, 'YYYY-MM-DD'), TO_DATE(:eventTime, 'HH24:MI'), :location, :description, :category, :eventPictureUrl, :allowedTicketsNumber, :price)
         `;
 
         await connection.execute(
             insertEventSql,
-            [organizerId, eventName, eventDate, eventTime, location, description, category, eventPictureData, allowedTicketsNumber, price],
+            [organizerId, eventName, eventDate, eventTime, location, description, category, eventPictureUrl, allowedTicketsNumber, price],
             { autoCommit: true }
         );
 
-        res.status(201).json({ message: 'Event created successfully' });
+        res.status(201).json({ message: 'Event created successfully', imageUrl: eventPictureUrl });
     } catch (error) {
         console.error('Error creating event:', error);
         res.status(500).json({ message: 'Error creating event' });
@@ -113,6 +120,7 @@ console.log("Organizer ID:", organizerId);
         }
     }
 });
+
 router.get('/all', async (req, res) => {
     let connection;
     try {

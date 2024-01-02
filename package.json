@@ -2,12 +2,17 @@
   "name": "event-hub-backend",
   "version": "0.0.0",
   "scripts": {
-    "start": "node src/backend/server.js", 
+    "start": "node src/backend/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "private": true,
   "dependencies": {
+    "@google-cloud/storage": "^7.7.0",
+    "@paypal/payouts-sdk": "^1.1.1",
     "bcrypt": "^5.1.1",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
     "multer": "^1.4.5-lts.1",
@@ -15,13 +20,6 @@
     "oracledb": "^6.3.0",
     "pdfkit": "^0.14.0",
     "qrcode": "^1.5.3",
-    "stripe": "^14.10.0",
-    "express": "^4.17.1",
-    "cors": "^2.8.5",
-    "body-parser": "^1.19.0",
-    "@paypal/payouts-sdk": "^1.1.1"
-  },
-  "devDependencies": {
-    
+    "stripe": "^14.10.0"
   }
 }
