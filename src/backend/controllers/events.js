@@ -18,7 +18,15 @@ const storage = new Storage({ keyFilename: '../../uploads/eventhub-404818-1eb1f2
 
 const bucketName = 'EventHub_bucket';
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ 
+    storage: MulterGoogleCloudStorage.storageEngine({
+        bucket: bucketName,
+        filename: (req, file, cb) => {
+            const uniqueName = `${Date.now()}-${file.originalname}`;
+            cb(null, uniqueName);
+        },
+    }),
+});
 
 
 
@@ -60,24 +68,9 @@ async function clobToString(clob) {
       clob.on('error', err => reject(err));
     });
   }
-  function blobToBase64(blob) {
-    return new Promise((resolve, reject) => {
-        if (blob) {
-            const buffers = [];
-            blob.on('data', chunk => buffers.push(chunk));
-            blob.on('end', () => {
-                const buffer = Buffer.concat(buffers);
-                const base64 = buffer.toString('base64');
-                resolve(`data:image/png;base64,${base64}`);
-            });
-            blob.on('error', reject);
-        } else {
-            resolve(null);
-        }
-    });
-}
+  
 
-router.post('/create', authenticateToken, upload.single('eventPicture'), async (req, res) => {
+  router.post('/create', authenticateToken, upload.single('eventPicture'), async (req, res) => {
     const { eventName, eventDate, eventTime, location, description, category, allowedTicketsNumber, price } = req.body;
     const organizerId = req.user.user_id;
 
@@ -119,6 +112,7 @@ router.post('/create', authenticateToken, upload.single('eventPicture'), async (
         }
     }
 });
+
 
 router.get('/all', async (req, res) => {
     let connection;
