@@ -18,12 +18,12 @@ const corsOptions = {
   origin: 'https://master--deluxe-sundae-3987e9.netlify.app', // Replace with the origin of your Angular app
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
-  optionsSuccessStatus: 200,
+  
 };
 app.use(cors(corsOptions));
 
-app.use('/users', cors(corsOptions), usersRouter); // This defines the base path for the users routes
-app.use('/events',cors(corsOptions), eventsRouter);
+app.use('/users', usersRouter); // This defines the base path for the users routes
+app.use('/events', eventsRouter);
 
 
 
@@ -37,13 +37,13 @@ oracle.getConnection(dbConfig, (err, connection) => {
     console.error('Error connecting to Oracle database:', err);
   } else {
     console.log('Connected to Oracle database');
-    // Save the connection for use in your route controllers
+    
   }
 });
 
-// Set up Oracle database connection
 
-// Define your routes (see step 3).
+
+
 
 // Start the server
 const port = process.env.PORT || 3000;
