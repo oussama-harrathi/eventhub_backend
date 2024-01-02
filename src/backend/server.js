@@ -33,7 +33,7 @@ app.get('*', (req, res) => {
 
 const dbConfig = require('./dbconfig'); // Adjust the path as needed
 
-oracle.initOracleClient({ libDir: 'C:\\instantclient_21_12' }); // Specify the Oracle Instant Client directory
+ // Specify the Oracle Instant Client directory
 
 oracle.getConnection(dbConfig, (err, connection) => {
   if (err) {
