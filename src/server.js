@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.use(express.json());
 // Specify the allowed origins
 const corsOptions = {
-  origin: 'https://master--deluxe-sundae-3987e9.netlify.app', // Replace with the origin of your Angular app
+  origin: 'https://deluxe-sundae-3987e9.netlify.app', // Replace with the origin of your Angular app
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const oracle = require('oracledb');
-const cors = require('cors');
+
 const app = express();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -9,14 +9,7 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const dbConfig = require('../dbconfig');
 const JWT_SECRET = process.env.JWT_SECRET || "32jkJDF93@#fjJKH*#(kd0932JK@#Jfj2f3";
-const corsOptions = {
-  origin: 'https://master--deluxe-sundae-3987e9.netlify.app', // Replace with the origin of your Angular app
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true,
-  optionsSuccessStatus: 200,
-};
 
-app.use(cors(corsOptions));
 
 function generateToken(userData) {
   return jwt.sign(

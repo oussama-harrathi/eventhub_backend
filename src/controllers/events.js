@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const cors = require('cors');
+
 const app = express();
 const oracle = require('oracledb');
 const { Storage } = require('@google-cloud/storage');
@@ -22,14 +22,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "32jkJDF93@#fjJKH*#(kd0932JK@#Jfj2f
 const storage = new Storage({ keyFilename: '../../uploads/eventhub-404818-1eb1f209a523.json' });
 
 const bucketName = 'EventHub_bucket';
-const corsOptions = {
-    origin: '*', // Replace with the origin of your Angular app
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-    optionsSuccessStatus: 200,
-  };
 
-  app.use(cors(corsOptions));
 
 
 
