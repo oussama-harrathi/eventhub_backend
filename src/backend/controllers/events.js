@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const oracle = require('oracledb');
 const { Storage } = require('@google-cloud/storage');
+const multer = require('multer');
+const stream = require('stream');
+const upload = multer();
 
 const fs = require('fs');
 const jwt = require('jsonwebtoken'); // Make sure JWT is imported
@@ -60,24 +63,17 @@ async function clobToString(clob) {
     });
   }
   
+  
 
-  router.post('/create', authenticateToken, upload.single('eventPicture'), async (req, res) => {
-    const { eventName, eventDate, eventTime, location, description, category, allowedTicketsNumber, price } = req.body;
+  router.post('/create', authenticateToken, async (req, res) => {
+    const { eventName, eventDate, eventTime, location, description, category, allowedTicketsNumber, price, eventPicture } = req.body;
     const organizerId = req.user.user_id;
 
     let connection;
     try {
         connection = await oracle.getConnection(dbConfig);
 
-        let eventPictureUrl = null;
-        if (req.file) {
-            // Upload file to Google Cloud Storage
-            const bucket = storage.bucket(bucketName);
-            const fileName = `${Date.now()}-${req.file.originalname}`;
-            await bucket.upload(req.file.path, { destination: fileName });
-            eventPictureUrl = `https://storage.googleapis.com/${bucketName}/${fileName}`;
-            fs.unlinkSync(req.file.path); // Delete the file from local storage
-        }
+        let eventPictureUrl = eventPicture; // Assuming eventPicture is the URL from the frontend
 
         const insertEventSql = `
             INSERT INTO events (ORGANIZER_ID, EVENT_NAME, EVENT_DATE, EVENT_TIME, LOCATION, DESCRIPTION, CATEGORY, EVENT_PICTURE, ALLOWED_TICKETS_NUMBER, PRICE)
@@ -90,20 +86,21 @@ async function clobToString(clob) {
             { autoCommit: true }
         );
 
-        res.status(201).json({ message: 'Event created successfully', imageUrl: eventPictureUrl });
+        res.status(201).json({ message: 'Event created successfully' });
     } catch (error) {
         console.error('Error creating event:', error);
         res.status(500).json({ message: 'Error creating event' });
     } finally {
         if (connection) {
             try {
-                connection.release();
+                await connection.release();
             } catch (err) {
                 console.error('Error releasing connection:', err);
             }
         }
     }
 });
+
 
 
 router.get('/all', async (req, res) => {
