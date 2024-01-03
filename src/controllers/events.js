@@ -22,6 +22,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "32jkJDF93@#fjJKH*#(kd0932JK@#Jfj2f
 const storage = new Storage({ keyFilename: '../../uploads/eventhub-404818-1eb1f209a523.json' });
 
 const bucketName = 'EventHub_bucket';
+const upload = multer();
 
 
 
@@ -66,7 +67,7 @@ async function clobToString(clob) {
   
   
 
-  router.post('/create', authenticateToken, async (req, res) => {
+  router.post('/create',upload.none(), authenticateToken, async (req, res) => {
     const { eventName, eventDate, eventTime, location, description, category, allowedTicketsNumber, price, eventPictureUrl } = req.body;
     console.log(eventName, eventDate, eventTime, location, description, category, allowedTicketsNumber, price, eventPictureUrl);
 
