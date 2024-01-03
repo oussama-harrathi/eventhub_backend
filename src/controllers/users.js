@@ -266,7 +266,7 @@ router.post('/request-reset-password', async (req, res) => {
       `;
       await connection.execute(updateSql, [resetToken, email], { autoCommit: true });
 
-      sendEmail(email, 'Password Reset', `You requested a password reset. Click the link to set a new password: https://deluxe-sundae-3987e9.netlify.app/reset-password?token=${resetToken}`);
+      sendEmail(email, 'Password Reset', `You requested a password reset. Click the link to set a new password: \nhttps://deluxe-sundae-3987e9.netlify.app/reset-password?token=${resetToken}`);
     }
 
     connection.release();
