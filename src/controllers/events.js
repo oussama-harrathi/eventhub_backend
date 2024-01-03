@@ -200,7 +200,7 @@ router.get('/search', async (req, res) => {
                 location: event.LOCATION,
                 description,
                 category: event.CATEGORY,
-                eventPicture: event.eventPicture,
+                eventPicture: event.EVENT_PICTURE,
                 allowedTicketsNumber: event.ALLOWED_TICKETS_NUMBER,
                 price:event.PRICE
             };
@@ -415,7 +415,7 @@ router.get('/created-by-user', authenticateToken, async (req, res) => {
                 location: event.LOCATION,
                 description,
                 category: event.CATEGORY,
-                eventPicture: event.eventPicture,
+                eventPicture: event.EVENT_PICTURE,
                 allowedTicketsNumber: event.ALLOWED_TICKETS_NUMBER,
                 price: event.PRICE,
                 ticketsSold: event.TICKETS_SOLD,
@@ -474,7 +474,7 @@ router.get('/:id', async (req, res) => {
             location: event.LOCATION,
             description,
             category: event.CATEGORY,
-            eventPicture: event.eventPicture,
+            eventPicture: event.EVENT_PICTURE,
             allowedTicketsNumber: event.ALLOWED_TICKETS_NUMBER,
             price: event.PRICE
         };
