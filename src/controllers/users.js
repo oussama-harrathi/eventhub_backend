@@ -117,7 +117,7 @@ router.post('/register', async (req, res) => {
     sendEmail(lowerCaseEmail, 'Email Verification', `Please verify your email by clicking on the following link: \nhttps://deluxe-sundae-3987e9.netlify.app/verify-email?token=${token}`);
 
     connection.release();
-    return res.status(201).json({ message: 'User registered successfully. Please check your email to verify.' });
+    return res.status(201).json({ message: 'User registered successfully. Please check your email to verify.check spam folder also' });
   } catch (error) {
     console.error(error);
     if (connection) {
@@ -272,7 +272,7 @@ router.post('/request-reset-password', async (req, res) => {
     }
 
     connection.release();
-    return res.status(200).json({ message: 'If your email is registered, you will receive a password reset link.' });
+    return res.status(200).json({ message: 'If your email is registered, you will receive a password reset link.check spam also' });
   } catch (error) {
     console.error(error);
     connection.release();
