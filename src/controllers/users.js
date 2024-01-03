@@ -51,10 +51,12 @@ function authenticateToken(req, res, next) {
 
 async function sendEmail(email, subject, text) {
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: "smtp-relay.sendinblue.com",
+    port: 587,
+    secure: false, 
     auth: {
-      user: 'harrathioussama8@gmail.com',
-      pass: 'gumj mqhy mhqg lwnd'
+      user: "harrathioussama8@gmail.com",
+      pass: "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"
     }
   });
 
