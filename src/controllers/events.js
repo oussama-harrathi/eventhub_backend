@@ -67,31 +67,33 @@ async function clobToString(clob) {
   
 
   router.post('/create', authenticateToken, async (req, res) => {
-    const { eventName, eventDate, eventTime, location, description, category, allowedTicketsNumber, price, eventPicture } = req.body;
-    const organizerId = req.user.user_id;
+    const { eventName, eventDate, eventTime, location, description, category, allowedTicketsNumber, price, eventPictureUrl } = req.body;
+    const organizerId = req.user.user_id; // Ensure this is correctly obtained from your authentication middleware
 
     let connection;
     try {
         connection = await oracle.getConnection(dbConfig);
 
-        let eventPictureUrl = eventPicture; // Assuming eventPicture is the URL from the frontend
-
+        // Prepare SQL query for inserting event data
         const insertEventSql = `
             INSERT INTO events (ORGANIZER_ID, EVENT_NAME, EVENT_DATE, EVENT_TIME, LOCATION, DESCRIPTION, CATEGORY, EVENT_PICTURE, ALLOWED_TICKETS_NUMBER, PRICE)
             VALUES (:organizerId, :eventName, TO_DATE(:eventDate, 'YYYY-MM-DD'), TO_DATE(:eventTime, 'HH24:MI'), :location, :description, :category, :eventPictureUrl, :allowedTicketsNumber, :price)
         `;
 
+        // Execute the SQL query
         await connection.execute(
             insertEventSql,
             [organizerId, eventName, eventDate, eventTime, location, description, category, eventPictureUrl, allowedTicketsNumber, price],
             { autoCommit: true }
         );
 
+        // Send success response
         res.status(201).json({ message: 'Event created successfully' });
     } catch (error) {
         console.error('Error creating event:', error);
         res.status(500).json({ message: 'Error creating event' });
     } finally {
+        // Release the database connection
         if (connection) {
             try {
                 await connection.release();
@@ -101,6 +103,7 @@ async function clobToString(clob) {
         }
     }
 });
+
 
 
 
