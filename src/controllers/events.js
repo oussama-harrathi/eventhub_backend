@@ -68,7 +68,8 @@ async function clobToString(clob) {
 
   router.post('/create', authenticateToken, async (req, res) => {
     const { eventName, eventDate, eventTime, location, description, category, allowedTicketsNumber, price, eventPictureUrl } = req.body;
-    console.log(eventName+ eventDate+ eventTime+ location+ description+ category+ allowedTicketsNumber+ price+ eventPictureUrl);
+    console.log(eventName, eventDate, eventTime, location, description, category, allowedTicketsNumber, price, eventPictureUrl);
+
     const organizerId = req.user.user_id; // Ensure this is correctly obtained from your authentication middleware
 
     let connection;
