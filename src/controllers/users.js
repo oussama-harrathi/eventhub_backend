@@ -56,7 +56,7 @@ async function sendEmail(email, subject, text) {
     secure: false, 
     auth: {
       user: "harrathioussama8@gmail.com",
-      pass: "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"
+      pass: "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"
     }
   });
 
