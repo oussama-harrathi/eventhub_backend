@@ -6,7 +6,7 @@ const oracle = require('oracledb');
 const { Storage } = require('@google-cloud/storage');
 const multer = require('multer');
 const stream = require('stream');
-const upload = multer();
+
 
 const fs = require('fs');
 const jwt = require('jsonwebtoken'); // Make sure JWT is imported
@@ -83,9 +83,20 @@ async function clobToString(clob) {
         // Execute the SQL query
         await connection.execute(
             insertEventSql,
-            [organizerId, eventName, eventDate, eventTime, location, description, category, eventPictureUrl, allowedTicketsNumber, price],
+            {
+              organizerId: organizerId, 
+              eventName: eventName, 
+              eventDate: eventDate, 
+              eventTime: eventTime, 
+              location: location, 
+              description: description, 
+              category: category, 
+              eventPictureUrl: eventPictureUrl, 
+              allowedTicketsNumber: allowedTicketsNumber, 
+              price: price
+            },
             { autoCommit: true }
-        );
+          );
 
         // Send success response
         res.status(201).json({ message: 'Event created successfully' });
