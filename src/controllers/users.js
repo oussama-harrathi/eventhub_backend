@@ -272,7 +272,7 @@ router.post('/request-reset-password', async (req, res) => {
     }
 
     connection.release();
-    return res.status(200).json({ message: 'If your email is registered, you will receive a password reset link.check spam also' });
+    return res.status(200).json({ message: 'If your email is registered, you will receive a password reset link. Check spam also' });
   } catch (error) {
     console.error(error);
     connection.release();
