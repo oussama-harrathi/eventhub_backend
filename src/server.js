@@ -20,7 +20,7 @@ const corsOptions = {
   credentials: true,
   
 };
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.use('/users', usersRouter); // This defines the base path for the users routes
 app.use('/events', eventsRouter);
