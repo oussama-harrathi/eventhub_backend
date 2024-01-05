@@ -55,8 +55,8 @@ async function sendEmail(email, subject, text) {
     port: 587,
     secure: false, 
     auth: {
-      user: "c461vh@tr.pte.hu",
-      pass: "DJvbk2YZN4Fp17mq"
+      user: "oussamaharrathi@your-eventhub.site",
+      pass: "Rpn1a45gBPW8IXOt"
     }
   });
 
