@@ -55,8 +55,8 @@ async function sendEmail(email, subject, text) {
     port: 587,
     secure: false, 
     auth: {
-      user: "harrathioussama8@gmail.com",
-      pass: "1jTkcC5RhOPqb0F3"
+      user: "c461vh@tr.pte.hu",
+      pass: "DJvbk2YZN4Fp17mq"
     }
   });
 
