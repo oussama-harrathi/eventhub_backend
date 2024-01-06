@@ -9,6 +9,7 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const dbConfig = require('../dbconfig');
 const JWT_SECRET = process.env.JWT_SECRET || "32jkJDF93@#fjJKH*#(kd0932JK@#Jfj2f3";
+require('dotenv').config();
 
 
 function generateToken(userData) {
@@ -55,8 +56,8 @@ async function sendEmail(email, subject, text) {
     port: 587,
     secure: false, 
     auth: {
-      user: "oussamaharrathi@your-eventhub.site",
-      pass: "Rpn1a45gBPW8IXOt"
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASSWORD,
     }
   });
 

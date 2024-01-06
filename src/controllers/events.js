@@ -23,6 +23,8 @@ const storage = new Storage({ keyFilename: '../../uploads/eventhub-404818-1eb1f2
 
 const bucketName = 'EventHub_bucket';
 const upload = multer();
+require('dotenv').config();
+
 
 
 
@@ -32,8 +34,8 @@ const transporter = nodemailer.createTransport({
     port: 587,
     secure: false, 
     auth: {
-      user: "oussamaharrathi@your-eventhub.site",
-      pass: "Rpn1a45gBPW8IXOt"
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
     }
   });
 
