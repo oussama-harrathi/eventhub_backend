@@ -287,7 +287,7 @@ router.post('/purchaseTicket', authenticateToken, async (req, res) => {
             const userEmailAddress = req.user.email; // Fetch or define the user's email
 
             let mailOptions = {
-                from: 'harrathioussama8@gmail.com',
+                from: 'oussamaharrathi@your-eventhub.site',
                 to: userEmailAddress,
                 subject: 'Your Event Tickets',
                 attachments: [{

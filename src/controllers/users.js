@@ -61,7 +61,7 @@ async function sendEmail(email, subject, text) {
   });
 
   const mailOptions = {
-    from: 'harrathioussama8@gmail.com',
+    from: 'oussamaharrathi@your-eventhub.site',
     to: email,
     subject: subject,
     text: text
