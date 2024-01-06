@@ -120,11 +120,11 @@ function getEmailVerificationTemplate(fullName, token) {
         <h1>Email Verification</h1>
         <p>Hi ${fullName},</p>
         <p>Thanks for signing up! Please verify your email address to activate your account.</p>
-        <a href="https://deluxe-sundae-3987e9.netlify.app/verify-email?token=${token}" class="verify-button">Verify Email</a>
+        <a href="http://your-eventhub.site/verify-email?token=${token}" class="verify-button">Verify Email</a>
         <p>If you did not create an account, no further action is required.</p>
         <div class="footer">
           <p>If you're having trouble clicking the "Verify Email" button, copy and paste the URL below into your web browser:</p>
-          <p><a href="https://deluxe-sundae-3987e9.netlify.app/verify-email?token=${token}">https://deluxe-sundae-3987e9.netlify.app/verify-email?token=${token}</a></p>
+          <p><a href="http://your-eventhub.site/verify-email?token=${token}">http://your-eventhub.site/verify-email?token=${token}</a></p>
         </div>
       </div>
     </body>
@@ -331,7 +331,7 @@ router.post('/request-reset-password', async (req, res) => {
       `;
       await connection.execute(updateSql, [resetToken, email], { autoCommit: true });
 
-      sendEmail(email, 'Password Reset', `You requested a password reset. Click the link to set a new password: \nhttps://deluxe-sundae-3987e9.netlify.app/reset-password?token=${resetToken}`);
+      sendEmail(email, 'Password Reset', `You requested a password reset. Click the link to set a new password: \nhttp://your-eventhub.site/reset-password?token=${resetToken}`);
     }
 
     connection.release();
