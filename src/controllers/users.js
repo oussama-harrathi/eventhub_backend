@@ -69,6 +69,67 @@ async function sendEmail(email, subject, text) {
 
   await transporter.sendMail(mailOptions);
 }
+function getEmailVerificationTemplate(fullName, token) {
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Email Verification</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f4f4f4;
+          color: #333;
+          line-height: 1.6;
+        }
+        .container {
+          max-width: 600px;
+          margin: 20px auto;
+          padding: 20px;
+          background: #fff;
+          border-radius: 5px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+          color: #444;
+        }
+        a.verify-button {
+          display: inline-block;
+          margin-top: 20px;
+          padding: 10px 20px;
+          background-color: #007bff;
+          color: white;
+          text-decoration: none;
+          border-radius: 5px;
+          font-weight: bold;
+        }
+        a.verify-button:hover {
+          background-color: #0056b3;
+        }
+        .footer {
+          margin-top: 30px;
+          text-align: center;
+          font-size: 0.9em;
+          color: #666;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h1>Email Verification</h1>
+        <p>Hi ${fullName},</p>
+        <p>Thanks for signing up! Please verify your email address to activate your account.</p>
+        <a href="https://deluxe-sundae-3987e9.netlify.app/verify-email?token=${token}" class="verify-button">Verify Email</a>
+        <p>If you did not create an account, no further action is required.</p>
+        <div class="footer">
+          <p>If you're having trouble clicking the "Verify Email" button, copy and paste the URL below into your web browser:</p>
+          <p><a href="https://deluxe-sundae-3987e9.netlify.app/verify-email?token=${token}">https://deluxe-sundae-3987e9.netlify.app/verify-email?token=${token}</a></p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+}
 
 router.post('/register', async (req, res) => {
   const { full_name, email, password, confirm_password } = req.body;
@@ -89,7 +150,7 @@ router.post('/register', async (req, res) => {
     const emailResult = await connection.execute(checkEmailSql, [lowerCaseEmail], { outFormat: oracle.OBJECT });
 
     if (emailResult.rows.length > 0) {
-      connection.release();
+      await connection.release();
       return res.status(400).json({ message: 'Email already in use' });
     }
 
@@ -106,7 +167,7 @@ router.post('/register', async (req, res) => {
       insertUserSql,
       {
         full_name,
-        email: lowerCaseEmail, // Use the correct key here
+        email: lowerCaseEmail,
         password: hashedPassword,
         verification_token: token,
         verification_token_expiry: expiry
@@ -114,14 +175,15 @@ router.post('/register', async (req, res) => {
       { autoCommit: true }
     );
 
-    sendEmail(lowerCaseEmail, 'Email Verification', `Please verify your email by clicking on the following link: \nhttps://deluxe-sundae-3987e9.netlify.app/verify-email?token=${token}`);
+    const emailContent = getEmailVerificationTemplate(full_name, token);
+    sendEmail(lowerCaseEmail, 'Email Verification', emailContent);
 
-    connection.release();
-    return res.status(201).json({ message: 'User registered successfully. Please check your email to verify.check spam folder also' });
+    await connection.release();
+    return res.status(201).json({ message: 'User registered successfully. Please check your email to verify.' });
   } catch (error) {
     console.error(error);
     if (connection) {
-      connection.release();
+      await connection.release();
     }
     return res.status(500).json({ message: 'Error registering user' });
   }
