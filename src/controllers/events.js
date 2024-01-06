@@ -27,11 +27,13 @@ const upload = multer();
 
 
 
-let transporter = nodemailer.createTransport({
-    service: 'gmail',
+const transporter = nodemailer.createTransport({
+    host: "smtp-relay.sendinblue.com",
+    port: 587,
+    secure: false, 
     auth: {
-      user: 'harrathioussama8@gmail.com',
-      pass: 'gumj mqhy mhqg lwnd'
+      user: "oussamaharrathi@your-eventhub.site",
+      pass: "Rpn1a45gBPW8IXOt"
     }
   });
 
