@@ -32,7 +32,7 @@ function isValidEmail(email) {
 function generateVerificationToken() {
   const token = crypto.randomBytes(16).toString('hex');
   const expiry = new Date();
-  expiry.setDate(expiry.getDate() + 1); // Adds 1 day
+  expiry.setDate(expiry.getDate() + 10); // Adds 1 day
   return { token, expiry };
   
   
