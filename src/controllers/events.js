@@ -18,7 +18,7 @@ const PDFDocument = require('pdfkit');
 const stripe = require('stripe')('sk_test_51OPotvDshEHShaBlnxjFEqjVYWHpLnyeauJC0dIzoOzhlAuNu4yZaiTEcdaHHiQzJQH6MbfLTbCOBj88Oalv4WyZ00RXzGAjeB');
 const paypal = require('@paypal/payouts-sdk');
 
-const JWT_SECRET = process.env.JWT_SECRET || "32jkJDF93@#fjJKH*#(kd0932JK@#Jfj2f3";
+const JWT_SECRET = process.env.JWT_SECRET ;
 const storage = new Storage({ keyFilename: '../../uploads/eventhub-404818-1eb1f209a523.json' });
 
 const bucketName = 'EventHub_bucket';

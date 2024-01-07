@@ -6,10 +6,11 @@ const app = express();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+require('dotenv').config();
 const nodemailer = require('nodemailer');
 const dbConfig = require('../dbconfig');
-const JWT_SECRET = process.env.JWT_SECRET || "32jkJDF93@#fjJKH*#(kd0932JK@#Jfj2f3";
-require('dotenv').config();
+const JWT_SECRET = process.env.JWT_SECRET;
+
 
 
 function generateToken(userData) {
@@ -134,6 +135,61 @@ function getEmailVerificationTemplate(fullName, token) {
           <p><a href="http://your-eventhub.site/verify-email?token=${token}">http://your-eventhub.site/verify-email?token=${token}</a></p>
         </div>
       </div>
+    </body>
+    </html>
+  `;
+}
+
+
+function getPasswordResetTemplate(token) {
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Password Reset</title>
+      <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        line-height: 1.6;
+      }
+      .container {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #444;
+      }
+      a.reset-button {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+      }
+      a.reset-button:hover {
+        background-color: #0056b3;
+      }
+      .footer {
+        margin-top: 30px;
+        text-align: center;
+        font-size: 0.9em;
+        color: #666;
+      }
+      
+      </style>
+    </head>
+    <body>
+      <p>Click the link below to reset your password:</p>
+      <a href="http://your-eventhub.site/reset-password?token=${token}">Reset Password</a>
     </body>
     </html>
   `;
@@ -322,9 +378,10 @@ router.get('/verify-email', async (req, res) => {
 // Endpoint to request a password reset
 router.post('/request-reset-password', async (req, res) => {
   const { email } = req.body;
-  
+  let connection;
+
   try {
-    const connection = await oracle.getConnection(dbConfig);
+    connection = await oracle.getConnection(dbConfig);
     const userSql = 'SELECT email FROM users WHERE email = :email';
     const userResult = await connection.execute(userSql, [email], { outFormat: oracle.OBJECT });
 
@@ -338,15 +395,18 @@ router.post('/request-reset-password', async (req, res) => {
       `;
       await connection.execute(updateSql, [resetToken, email], { autoCommit: true });
 
-      sendEmail(email, 'Password Reset', `You requested a password reset. Click the link to set a new password: \nhttp://your-eventhub.site/reset-password?token=${resetToken}`);
+      const emailContent = getPasswordResetTemplate(resetToken);
+      await sendEmail(email, 'Password Reset', emailContent);
     }
 
-    connection.release();
     return res.status(200).json({ message: 'If your email is registered, you will receive a password reset link. Check spam also' });
   } catch (error) {
     console.error(error);
-    connection.release();
     return res.status(500).json({ message: 'Error processing your request' });
+  } finally {
+    if (connection) {
+      await connection.release();
+    }
   }
 });
 
