@@ -143,11 +143,11 @@ function getEmailVerificationTemplate(fullName, token) {
 
 function getPasswordResetTemplate(token) {
   return `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>Password Reset</title>
-      <style>
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>Password Reset</title>
+    <style>
       body {
         font-family: Arial, sans-serif;
         background-color: #f4f4f4;
@@ -161,6 +161,7 @@ function getPasswordResetTemplate(token) {
         background: #fff;
         border-radius: 5px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-align: center;
       }
       h1 {
         color: #444;
@@ -184,14 +185,18 @@ function getPasswordResetTemplate(token) {
         font-size: 0.9em;
         color: #666;
       }
-      
-      </style>
-    </head>
-    <body>
-      <p>Click the link below to reset your password:</p>
-      <a href="http://your-eventhub.site/reset-password?token=${token}">Reset Password</a>
-    </body>
-    </html>
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Password Reset Request</h1>
+      <p>You recently requested to reset your password for your account. Click the button below to reset it.</p>
+      <a href="http://your-eventhub.site/reset-password?token=${token}" class="reset-button">Reset Password</a>
+      <p class="footer">If you did not request a password reset, please ignore this email or contact support if you have concerns.</p>
+    </div>
+  </body>
+  </html>
+  
   `;
 }
 
