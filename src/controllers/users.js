@@ -33,7 +33,7 @@ function isValidEmail(email) {
 function generateVerificationToken() {
   const token = crypto.randomBytes(16).toString('hex');
   const expiry = new Date();
-  expiry.setDate(expiry.getDate() + 10); // Adds 1 day
+  expiry.setDate(expiry.getDate() + 10); 
   return { token, expiry };
   
   
@@ -67,14 +67,14 @@ async function sendEmail(email, subject, htmlContent) {
       from: 'oussamaharrathi@your-eventhub.site',
       to: email,
       subject: subject,
-      html: htmlContent // Changed from text to html
+      html: htmlContent 
     };
 
     await transporter.sendMail(mailOptions);
     console.log("Email sent successfully");
   } catch (error) {
     console.error("Error in sending email: ", error);
-    throw error; // Propagating the error to handle it in the caller function
+    throw error; 
   }
 }
 

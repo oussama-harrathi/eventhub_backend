@@ -4,33 +4,33 @@ const app = express();
 const bodyParser = require('body-parser');
 const oracle = require('oracledb');
 const usersRouter = require('./controllers/users');
-const eventsRouter = require('./controllers/events'); // Adjust the path as needed
+const eventsRouter = require('./controllers/events'); 
 const path = require('path');
 
 
-// Configure middleware
- // Place this line before other app.use statements
+
+ 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());
-// Specify the allowed origins
+
 const corsOptions = {
-  origin: 'https://deluxe-sundae-3987e9.netlify.app', // Replace with the origin of your Angular app
+  origin: 'https://deluxe-sundae-3987e9.netlify.app', 
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   
 };
 app.use(cors());
 
-app.use('/users', usersRouter); // This defines the base path for the users routes
+app.use('/users', usersRouter); 
 app.use('/events', eventsRouter);
 
 
 
 
-const dbConfig = require('./dbconfig'); // Adjust the path as needed
+const dbConfig = require('./dbconfig'); 
 
- // Specify the Oracle Instant Client directory
+ 
 
 oracle.getConnection(dbConfig, (err, connection) => {
   if (err) {

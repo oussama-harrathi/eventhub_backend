@@ -9,7 +9,7 @@ const stream = require('stream');
 
 
 const fs = require('fs');
-const jwt = require('jsonwebtoken'); // Make sure JWT is imported
+const jwt = require('jsonwebtoken'); 
 const dbConfig = require('../dbconfig');
 const { error } = require('console');
 const QRCode = require('qrcode');
@@ -75,19 +75,19 @@ async function clobToString(clob) {
     const { eventName, eventDate, eventTime, location, description, category, allowedTicketsNumber, price, eventPictureUrl } = req.body;
     console.log(eventName, eventDate, eventTime, location, description, category, allowedTicketsNumber, price, eventPictureUrl);
 
-    const organizerId = req.user.user_id; // Ensure this is correctly obtained from your authentication middleware
+    const organizerId = req.user.user_id; 
 
     let connection;
     try {
         connection = await oracle.getConnection(dbConfig);
 
-        // Prepare SQL query for inserting event data
+        
         const insertEventSql = `
             INSERT INTO events (ORGANIZER_ID, EVENT_NAME, EVENT_DATE, EVENT_TIME, LOCATION, DESCRIPTION, CATEGORY, EVENT_PICTURE, ALLOWED_TICKETS_NUMBER, PRICE)
             VALUES (:organizerId, :eventName, TO_DATE(:eventDate, 'YYYY-MM-DD'), TO_DATE(:eventTime, 'HH24:MI'), :location, :description, :category, :eventPictureUrl, :allowedTicketsNumber, :price)
         `;
 
-        // Execute the SQL query
+       
         await connection.execute(
             insertEventSql,
             {
@@ -148,7 +148,7 @@ router.get('/all', async (req, res) => {
                 location: event.LOCATION,
                 description,
                 category: event.CATEGORY,
-                eventPicture: event.EVENT_PICTURE, // URL of the image in Google Cloud Storage
+                eventPicture: event.EVENT_PICTURE, 
                 allowedTicketsNumber: event.ALLOWED_TICKETS_NUMBER,
                 price: event.PRICE
             };
@@ -270,7 +270,7 @@ router.post('/purchaseTicket', authenticateToken, async (req, res) => {
             const qrCodeData = JSON.stringify(ticketData);
             const qrCodeURL = await QRCode.toDataURL(qrCodeData);
 
-            const yOffset = i * 190; // Adjust this value to change the vertical spacing between tickets
+            const yOffset = i * 190; 
 
             doc.fontSize(12).font('Helvetica-Bold').text(`Ticket #${i + 1}: ${eventName}`, 50, 50 + yOffset, { align: 'left' });
             doc.fontSize(10).font('Helvetica').text(`Date: ${eventDate}`, 50, 70 + yOffset, { align: 'left' });
@@ -279,14 +279,14 @@ router.post('/purchaseTicket', authenticateToken, async (req, res) => {
             doc.image(qrCodeURL, 50, 130 + yOffset, { fit: [100, 100] });
 
             if (i < ticketQuantity - 1) {
-                doc.moveDown(4); // Adjust this value to increase or decrease the space between tickets
+                doc.moveDown(4); 
             }
         }
 
         // Finalize PDF file
         doc.on('end', () => {
             let pdfData = Buffer.concat(buffers);
-            const userEmailAddress = req.user.email; // Fetch or define the user's email
+            const userEmailAddress = req.user.email; 
 
             let mailOptions = {
                 from: 'oussamaharrathi@your-eventhub.site',
@@ -500,7 +500,7 @@ router.get('/:id', async (req, res) => {
 
 
 router.post('/create-payout', async (req, res) => {
-    const { amount, receiver } = req.body; // Amount and recipient's PayPal email
+    const { amount, receiver } = req.body; 
   
     const request = new paypal.payouts.PayoutsPostRequest();
     request.requestBody({
@@ -516,7 +516,7 @@ router.post('/create-payout', async (req, res) => {
         },
         receiver: receiver,
         note: 'Event payout',
-        sender_item_id: 'EventPayout' // A unique identifier for tracking payouts
+        sender_item_id: 'EventPayout' 
       }]
     });
   
