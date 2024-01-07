@@ -293,7 +293,7 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Incorrect password' });
     }
 
-    // Include user_id in the token
+    
     const token = generateToken({ user_id: user.USER_ID, email, full_name: user.FULL_NAME });
     connection.release();
     return res.status(200).json({ message: 'Logged in successfully', token });
