@@ -50,26 +50,33 @@ function authenticateToken(req, res, next) {
   });
 }
 
-async function sendEmail(email, subject, text) {
-  const transporter = nodemailer.createTransport({
-    host: "smtp-relay.sendinblue.com",
-    port: 587,
-    secure: false, 
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASSWORD,
-    }
-  });
+async function sendEmail(email, subject, htmlContent) {
+  try {
+    const transporter = nodemailer.createTransport({
+      host: "smtp-relay.sendinblue.com",
+      port: 587,
+      secure: false, 
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
+      }
+    });
 
-  const mailOptions = {
-    from: 'oussamaharrathi@your-eventhub.site',
-    to: email,
-    subject: subject,
-    text: text
-  };
+    const mailOptions = {
+      from: 'oussamaharrathi@your-eventhub.site',
+      to: email,
+      subject: subject,
+      html: htmlContent // Changed from text to html
+    };
 
-  await transporter.sendMail(mailOptions);
+    await transporter.sendMail(mailOptions);
+    console.log("Email sent successfully");
+  } catch (error) {
+    console.error("Error in sending email: ", error);
+    throw error; // Propagating the error to handle it in the caller function
+  }
 }
+
 function getEmailVerificationTemplate(fullName, token) {
   return `
     <!DOCTYPE html>
@@ -177,7 +184,7 @@ router.post('/register', async (req, res) => {
     );
 
     const emailContent = getEmailVerificationTemplate(full_name, token);
-    sendEmail(lowerCaseEmail, 'Email Verification', emailContent);
+    await sendEmail(lowerCaseEmail, 'Email Verification', emailContent);
 
     await connection.release();
     return res.status(201).json({ message: 'User registered successfully. Please check your email to verify.' });
